@@ -33,4 +33,4 @@ jobs:
       - save_cache:
           paths:
             - node_modules
-          key: yarn-packages-v1-{{ .Branch }}-{{ checksum "package-lock.json" }}
+          key: npm-packages-v1-{{ .Branch }}-{{ checksum "package-lock.json" }}
