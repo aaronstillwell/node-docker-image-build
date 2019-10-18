@@ -1,0 +1,32 @@
+version: 2
+jobs:
+  build:
+    docker:
+      image: circleci/node:latest
+    steps:
+      - setup_remote_docker:
+          docker_layer_caching: true
+
+      # Load node_modules from a previous run
+      - restore_cache:
+          keys:
+            - npm-packages-v1-{{ .Branch }}-{{ checksum "package-lock.json" }}
+            - npm-packages-v1-{{ .Branch }}-
+            - npm-packages-v1-
+      
+      # Build image
+      - run: docker build --build-args npm_auth=test --build-args sha=$CIRCLE_SHA1
+      
+      # Extract the node_modules directory, having built the image
+      - run:
+          name: Retreive node_modules from docker container
+          command: |
+            IMAGE_ID=$(docker images --format "{{.ID}}" | head -1)
+            CONTAINER_ID=$(docker create $IMAGE_ID)
+            docker cp $CONTAINER_ID:/usr/src/app/node_modules node_modules
+
+      # Save node_modules for them to be added to the docker image next time
+      - save_cache:
+          paths:
+            - node_modules
+          key: yarn-packages-v1-{{ .Branch }}-{{ checksum "package-lock.json" }}
