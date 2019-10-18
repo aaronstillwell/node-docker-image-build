@@ -15,7 +15,7 @@ jobs:
             - npm-packages-v1-
       
       # Build image
-      - run: docker build --build-args npm_auth=test --build-args sha=$CIRCLE_SHA1
+      - run: docker build --build-arg npm_auth=test --build-arg sha=$CIRCLE_SHA1
       
       # Extract the node_modules directory, having built the image
       - run:
