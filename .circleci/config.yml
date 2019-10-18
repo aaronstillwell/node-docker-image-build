@@ -8,7 +8,9 @@ jobs:
           docker_layer_caching: true
 
       - checkout
-      
+
+      - run: mkdir node_modules
+
       # Load node_modules from a previous run
       - restore_cache:
           keys:
